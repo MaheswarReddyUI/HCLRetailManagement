@@ -1,6 +1,18 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { ProductService } from 'src/app/product-management/services/product.service';
 
+
+
+export interface TableRow {
+  image: number;
+  name: string;
+  category: string;
+  price: number;
+  stockin: string;
+  stockout: string;
+}
 
 @Component({
   selector: 'app-inventory-management',
@@ -9,18 +21,28 @@ import { HttpClient } from '@angular/common/http';
 })
 export class InventoryManagementComponent {
 
-  dataSource: any;
-  private jsonUrl = './assets/data.json';
-
+  dataSource = new MatTableDataSource<TableRow>([]);
   displayedColumns: string[] = ['image', 'name', 'category', 'price', 'stockin', 'stockout'];
-  columnsToDisplay: string[] = this.displayedColumns.slice();
-
-  constructor(private http: HttpClient) {}
+  
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  pageSizes = [5, 10, 25, 50, 100];
+ 
+  constructor(private productsService:ProductService) {}
 
   ngOnInit(): void {
-    this.http.get(this.jsonUrl).subscribe((data) => {
-      this.dataSource = data;
-      console.log(this.dataSource);
+    this.loadProducts();
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
+
+  private loadProducts() {
+    this.productsService.getProducts().subscribe((response: TableRow[]) => {
+      this.dataSource.data = response; 
+      if (this.paginator) {
+        this.dataSource.paginator = this.paginator;
+      }
     });
   }
 

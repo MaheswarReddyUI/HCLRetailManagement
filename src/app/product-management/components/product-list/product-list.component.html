@@ -1,0 +1,27 @@
+
+
+<div class="page-container">
+    <h1>Product List</h1>  
+<div class="product-grid">
+    <mat-card class="product-card" *ngFor="let product of products">
+     
+      <div class="image-wrapper">
+        <img
+          mat-card-image
+          [src]="product.image"
+          alt="{{ product.title }}"
+        />
+      </div>
+      <mat-card-header>
+        <mat-card-title>{{ product.title }}</mat-card-title>
+        <mat-card-subtitle>₹ {{ product.price }}</mat-card-subtitle>
+      </mat-card-header>
+     
+  
+      <mat-card-actions align="end">
+        <button mat-button color="primary"  (click)="editProduct(product.id)" >Edit</button>
+        <button mat-raised-button color="accent">Delete</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
